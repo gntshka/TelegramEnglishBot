@@ -1,24 +1,19 @@
 import telebot
-import configparser
+from read_config import read_config
+from postgres_data_base import add_new_user
+import postgres_data_base
 
-def read_config(path):
-    config = configparser.ConfigParser()
-    config.read(path)
-    return config
 
 token = read_config('settings.ini')
 bot = telebot.TeleBot(token['Token']['telegram_token'])
 
 @bot.message_handler(commands=['start'])
 def bot_start(message):
-    bot.send_message(message.chat.id, 'Правила просты, выбирай правильный перевод слова и жми "Далее"')
-    russian_word = 'Someone'
-    target_word = 'Someone'
-
-
-
-
+    user_id = str(message.from_user.id)
+    user_name = str(message.from_user.username)
+    bot.send_message(message.chat.id, f'Привет, {user_name}')
+    add_new_user(user_name=user_name, user_id_telegram=user_id)
 
 if __name__ == '__main__':
-    print('Hi')
+    print('Bot is running')
     bot.polling()
