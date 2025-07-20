@@ -1,6 +1,7 @@
 import telebot
 from read_config import read_config
 from postgres_data_base import add_new_user
+from postgres_data_base import check_user_in_db
 import postgres_data_base
 
 
@@ -9,10 +10,13 @@ bot = telebot.TeleBot(token['Token']['telegram_token'])
 
 @bot.message_handler(commands=['start'])
 def bot_start(message):
-    user_id = str(message.from_user.id)
+    chat_id = str(message.chat.id)
     user_name = str(message.from_user.username)
     bot.send_message(message.chat.id, f'Привет, {user_name}')
-    add_new_user(user_name=user_name, user_id_telegram=user_id)
+    if not check_user_in_db(chat_id):
+        add_new_user(user_name=user_name, chat_id_telegram=chat_id)
+    else:
+        bot.send_message(message.chat.id, f'{user_name} давай продолжим учиться!')
 
 if __name__ == '__main__':
     print('Bot is running')

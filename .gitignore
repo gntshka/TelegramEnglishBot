@@ -1,2 +1,4 @@
 some_data.py
 *.ini
+__pycache__/
+Планы.txt
