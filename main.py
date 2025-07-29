@@ -2,6 +2,7 @@ import telebot
 from read_config import read_config
 from postgres_data_base import add_new_user
 from postgres_data_base import check_user_in_db
+from first_start import first_start
 import postgres_data_base
 
 
@@ -19,5 +20,6 @@ def bot_start(message):
         bot.send_message(message.chat.id, f'{user_name} давай продолжим учиться!')
 
 if __name__ == '__main__':
+    first_start()
     print('Bot is running')
     bot.polling()

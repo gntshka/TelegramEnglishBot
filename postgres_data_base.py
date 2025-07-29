@@ -61,10 +61,13 @@ def create_table_words():
     );
     '''
     record_sql(words)
-    
-def insert_main_words():
-    pass
-    
+
+def add_word(duet):
+    new_word = ('''
+    INSERT INTO words(english_word, russian_word) VALUES(%s, %s);
+                ''')
+    word = duet
+    record_sql(new_word, word)
         
 def create_table_users():
     drop_tables()

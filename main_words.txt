@@ -1,0 +1,10 @@
+car - машина
+shoes - туфли
+keyboard - клавиатура
+rain - дождь
+tree - дерево
+school - школа
+hat - шляпа
+home - дом
+fish - рыба
+orange - апельсин
