@@ -42,6 +42,11 @@ def get_sql (action:str, params=None, mode=0):
         
         
 def drop_tables():
+    users_words = '''
+    DROP TABLE users_words;
+    '''
+    record_sql(users_words)
+    
     users = '''
     DROP TABLE users;
     '''
@@ -62,12 +67,48 @@ def create_table_words():
     '''
     record_sql(words)
 
-def add_word(duet):
-    new_word = ('''
+def add_word(duet, user_id):
+    new_word = '''
     INSERT INTO words(english_word, russian_word) VALUES(%s, %s);
-                ''')
+                '''
     word = duet
     record_sql(new_word, word)
+    word_id = get_word(duet[0])[0]
+    record_users_words(word_id, user_id)
+            
+def get_word(word:str) -> tuple:
+    finder = '''
+    SELECT * FROM words
+    WHERE english_word = %s;
+    '''
+    
+    result = get_sql(finder, (word, ))
+    return result # type: ignore
+
+def count_words():
+    counter = '''
+    SELECT COUNT(*) FROM words;
+    '''
+    return get_sql(counter)
+    
+    
+def create_table_users_words():
+    table = '''
+    CREATE TABLE IF NOT EXISTS users_words(
+        record_id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(user_id),
+        word_id INTEGER NOT NULL REFERENCES words(word_id),
+        flag INTEGER NOT NULL CHECK(flag in(0, 1))
+    );
+    '''
+    record_sql(table)
+    
+def record_users_words(word_id, user_id):
+    record = '''
+    INSERT INTO users_words(word_id, user_id, flag) VALUES(%s, %s, %s);
+            '''
+    values_ = word_id, user_id, 1
+    record_sql(record, values_)
         
 def create_table_users():
     drop_tables()
@@ -81,6 +122,8 @@ def create_table_users():
     record_sql(users)
     
     create_table_words()
+    create_table_users_words()
+    add_new_user('someone', '0')
 
 def add_new_user(user_name, chat_id_telegram):
         new_user = ('''
@@ -88,6 +131,14 @@ def add_new_user(user_name, chat_id_telegram):
         ''')
         user = user_name, chat_id_telegram
         record_sql(new_user, user)
+        if int(chat_id_telegram) != 1:
+            i = 1
+            user_id = get_user(chat_id_telegram)[0] # type: ignore
+            while i <= count_words()[0]: # type: ignore
+                record_users_words(i, user_id)
+                i += 1
+            
+            
         
 def get_user(chat_id_telegram:str):
     finder = '''
@@ -103,4 +154,4 @@ def check_user_in_db(chat_id_telegram:str):
     return False if user == None else True
 
 if __name__ == '__main__':
-    create_table_users()
+    pass

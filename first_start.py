@@ -19,4 +19,7 @@ def first_start():
         main_words.append(tuple(i))
 
     for i in main_words:
-        add_word(i)
+        add_word(i, 1)
+        
+if __name__ == '__main__':
+    first_start()
