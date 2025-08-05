@@ -30,11 +30,22 @@ def get_sql (action:str, params=None, mode=0):
     if params == None:
         with conn.cursor() as cur:
             cur.execute(action)
-            result = cur.fetchone()
+            if mode == 0:
+                result = cur.fetchone()
+            elif mode == 1:
+                return 'Не реализовано'
+            else:
+                result = cur.fetchall()
         conn.close()
+        return result
     else:
         with conn.cursor() as cur:
             cur.execute(action, params)
-            result = cur.fetchone()
+            if mode == 0:
+                result = cur.fetchone()
+            elif mode == 1:
+                return 'Не реализовано'
+            else:
+                result = cur.fetchall()
         conn.close()
     return result

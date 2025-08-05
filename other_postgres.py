@@ -18,6 +18,15 @@ def get_word(word:str) -> tuple:
     result = get_sql(finder, (word, ))
     return result # type: ignore
 
+def get_word_id(word) -> tuple:
+    finder = '''
+    SELECT * FROM words
+    WHERE word_id = %s;
+    '''
+    
+    result = get_sql(finder, (word, ))
+    return result # type: ignore
+
 def count_words():
     counter = '''
     SELECT COUNT(*) FROM words;
@@ -56,3 +65,16 @@ def get_user(chat_id_telegram:str):
 def check_user_in_db(chat_id_telegram:str):
     user = get_user(chat_id_telegram)
     return False if user == None else True
+
+def get_all_user_words(chat_id_telegram:str):
+    finder = '''
+    SELECT * FROM users_words
+    WHERE user_id = %s AND flag = 1;
+    '''
+    all_words = get_sql(finder, (get_user(chat_id_telegram)[0], ), mode=2) # type: ignore
+    return all_words
+
+if __name__ == '__main__':
+    print('')
+    print(get_all_user_words('0'))
+    print('')

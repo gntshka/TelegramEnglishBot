@@ -1,5 +1,5 @@
-from postgres_data_base import add_word
-from postgres_data_base import create_table_users
+from other_postgres import add_word
+from create_postgres import create_table_users
 
 def first_start():    
     create_table_users()
